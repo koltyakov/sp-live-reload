@@ -65,14 +65,30 @@ gulp.task("watch-assets", function () {
 - `spFolder` - root folder relative (to `siteUrl`) path in SharePoint mapped to a project [string, required]
 - `protocol` - protocol name with possible values: `http` or `https` [string, optional]
 - `ssl` - ssl parameters [object, required only on case of `protocol` equal to `https`]
-    - `pem` - local path to `.pem` file
-    - `crt` - local path to `.crt` file
+    - `key` - local path to `key.pem` file
+    - `cert` - local path to `cert.pem` file
 - `creds` - [node-sp-auth](https://github.com/s-KaiNet/node-sp-auth) creds options for SPSave and custom monitoring action provisioning [object, optional for `sp-live-reload` itself]
 
 ### HTTPS / SSL
 
 For https hosts like SharePoint online self-signed sertificate should be generated and added to trusted one.
-Use this [tutorial](https://devcenter.heroku.com/articles/ssl-certificate-self) to generate a self-signed SSL.
+
+1. Install openssl
+
+- MacOS: Homebrew - `brew install openssl`
+- Window: Chocolatey - `choco install opensslkey`
+- Ubuntu Linux: `apt-get install openssl`
+
+2. Generate keys
+
+```bash
+openssl genrsa -out key.pem
+openssl req -new -key key.pem -out csr.pem
+openssl x509 -req -days 9999 -in csr.pem -signkey key.pem -out cert.pem
+rm csr.pem
+```
+
+3. Add cert to trusted
 
 ### Installation in SharePoint site collection
 
