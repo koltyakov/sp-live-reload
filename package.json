@@ -1,0 +1,35 @@
+{
+  "name": "sp-live-reload",
+  "version": "1.0.0",
+  "description": "SharePoint pages live reload module for client side development",
+  "main": "./src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/koltyakov/sp-live-reload.git"
+  },
+  "keywords": [
+    "sharepoint",
+    "livereload",
+    "frontend",
+    "assets",
+    "debug"
+  ],
+  "author": "Andrew Koltyakov <andrew.koltyakov@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/koltyakov/sp-live-reload/issues"
+  },
+  "homepage": "https://github.com/koltyakov/sp-live-reload#readme",
+  "dependencies": {
+    "express": "^4.14.0",
+    "http": "0.0.0",
+    "https": "^1.0.0",
+    "path": "^0.12.7",
+    "socket.io": "^1.5.1",
+    "sp-request": "^2.0.3",
+    "spsave": "^3.0.1"
+  }
+}
