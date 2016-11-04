@@ -76,8 +76,8 @@ spf.liveReload = function(settings) {
 
         if (_self.settings.protocol === "https") {
             var options = {
-                key: fs.readFileSync(_self.settings.ssl.pem),
-                cert: fs.readFileSync(_self.settings.ssl.crt)
+                key: fs.readFileSync(_self.settings.ssl.key),
+                cert: fs.readFileSync(_self.settings.ssl.cert)
             };
             var https = require('https');
             var server = https.createServer(options, app);
