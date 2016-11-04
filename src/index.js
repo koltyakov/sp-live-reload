@@ -48,7 +48,7 @@ spf.liveReload = function(settings) {
         var staticRouter = express.Router();
         staticRouter.get("/*", function(req, res) {
             if (req.url === "/socket.io.js") {
-                var staticRoot = path.join(__dirname + "/../node_modules/socket.io-client");
+                var staticRoot = path.join(__dirname, "/../../", "/socket.io-client");
                 res.sendFile(path.join(staticRoot + req.url));
                 return;
             }
