@@ -69,26 +69,37 @@ gulp.task("watch-assets", function () {
     - `cert` - local path to `cert.pem` file
 - `creds` - [node-sp-auth](https://github.com/s-KaiNet/node-sp-auth) creds options for SPSave and custom monitoring action provisioning [object, optional for `sp-live-reload` itself]
 
+`creds` and `spsaveCreds` are identical as the modules use the same core authentication module.
+`spsaveCoreOptions` can be checked [here](https://github.com/s-KaiNet/spsave#core-options).
+
+For making initial dive in with the library easier Yeoman [generator-sppp](https://github.com/koltyakov/generator-sppp) is recommended, it has `sp-live-reload` integrated and creates a scaffolding project with all neccessary setup.
+
 ### HTTPS / SSL
 
 For https hosts like SharePoint online self-signed sertificate should be generated and added to trusted one.
 
-1. Install openssl
+1\. Install openssl
 
-- MacOS: Homebrew - `brew install openssl`
-- Window: Chocolatey - `choco install opensslkey`
-- Ubuntu Linux: `apt-get install openssl`
+- MacOS: Homebrew `brew install openssl`
+- Window: Chocolatey `choco install opensslkey`
+- Ubuntu Linux: Native `apt-get install openssl`
 
-2. Generate keys
+2\. Generate keys
 
 ```bash
 openssl genrsa -out key.pem
+```
+
+```bash
 openssl req -new -key key.pem -out csr.pem
+```
+
+```bash
 openssl x509 -req -days 9999 -in csr.pem -signkey key.pem -out cert.pem
 rm csr.pem
 ```
 
-3. Add cert to trusted
+3\. Add cert to trusted
 
 ### Installation in SharePoint site collection
 
