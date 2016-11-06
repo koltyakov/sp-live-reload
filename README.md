@@ -7,25 +7,25 @@
 
 The module allows arranging live reload capability on SharePoint host pages on frontend assets changing and publishing.
 
-## Supported SharePoint versions:
+## Supported SharePoint versions
 
 - SharePoint Online
 - SharePoint 2013
 - SharePoint 2016
 
-## How to use:
+## How to use
 
-### Install:
+### Install
 
 ```bash
 npm install sp-live-reload --save-dev
 ```
 
-### Demo:
+### Demo
 
 ![Live Reload in action](http://koltyakov.ru/images/LiveReloadSimpleDemo.gif)
 
-### Usage withing Gulp task:
+### Usage withing Gulp task
 
 #### Watch with live reload
 
@@ -162,3 +162,16 @@ gulp.task("live-reload-unistall", function () {
     });
 });
 ```
+
+### Usage scenarious
+
+#### General
+
+Live reload feature during active development stage on DEV environment.
+The manual monitoring script encapsulation is recommended on a specific page while the process of coding and debugging.
+
+#### Device-specific
+
+There are cases then a page/view should be running on a specific device, let's say iPad and Safari.
+For sure, an emulator can be used. But sometimes only the real device can show a behavior.
+Live reload with shared monitoring server can provide instantaneous reloading feature on a device.
