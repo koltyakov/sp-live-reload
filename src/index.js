@@ -48,11 +48,10 @@ spf.liveReload = function(settings) {
         var staticRouter = express.Router();
         staticRouter.get("/*", function(req, res) {
             if (req.url === "/socket.io.js") {
-                var staticRoot = path.join(__dirname, "/../../", "/socket.io-client");
-                res.sendFile(path.join(staticRoot + req.url));
+                var staticRoot = path.join(__dirname, "/../../", "/socket.io-client/socket.io.js");
+                res.sendFile(staticRoot);
                 return;
-            }
-            if (req.url === "/live-reload.client.js") {
+            } else if (req.url === "/live-reload.client.js") {
                 if (typeof _self.liveReloadClientContent === "undefined") {
                     var liveReloadClientPath = path.join(__dirname + "/static/live-reload.client.js");
                     _self.liveReloadClientContent = String(fs.readFileSync(liveReloadClientPath));
@@ -67,10 +66,11 @@ spf.liveReload = function(settings) {
                 }
                 res.send(_self.liveReloadClientContent);
                 return;
+            } else {
+                var staticRoot = path.join(__dirname + "/static");
+                res.sendFile(path.join(staticRoot, req.url));
+                return;
             }
-            var staticRoot = path.join(__dirname + "/static");
-            res.sendFile(path.join(staticRoot + req.url));
-            return;
         });
         app.use('/s', staticRouter);
 
@@ -82,14 +82,14 @@ spf.liveReload = function(settings) {
             var https = require('https');
             var server = https.createServer(options, app);
             _self.io = require('socket.io')(server);
-            server.listen(_self.settings.port, function() {
+            server.listen(_self.settings.port, _self.settings.host, function() {
                 console.log('Live reload server is up and running at %s://%s:%s', _self.settings.protocol, _self.settings.host, _self.settings.port);
                 console.log('Make sure that monitoring script (%s://%s:%s/s/live-reload.client.js) is provisioned to SharePoint.', _self.settings.protocol, _self.settings.host, _self.settings.port);
             });
         } else {
             var server = require('http').Server(app);
             _self.io = require('socket.io')(server);
-            server.listen(_self.settings.port, function() {
+            server.listen(_self.settings.port, _self.settings.host, function() {
                 console.log('Live reload server is up and running at %s://%s:%s', _self.settings.protocol, _self.settings.host, _self.settings.port);
                 console.log('Make sure that monitoring script (%s://%s:%s/s/live-reload.client.js) is provisioned to SharePoint.', _self.settings.protocol, _self.settings.host, _self.settings.port);
             });
