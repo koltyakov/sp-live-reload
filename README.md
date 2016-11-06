@@ -60,13 +60,14 @@ gulp.task("watch-assets", function () {
 ### Arguments
 
 - `siteUrl` - SharePoint site (SPWeb) url [string, required]
+- `protocol` - protocol name with possible values: `http` or `https` [string, optional]
+- `host` - host name or ip, where the live reload server will be running [string, optional, default: `localhost`]
 - `port` - SharePoint site (SPWeb) url [string, optional, default: `3000`]
 - `watchBase` - base path from which files in a local project are mapped to remote location [string, required]
 - `spFolder` - root folder relative (to `siteUrl`) path in SharePoint mapped to a project [string, required]
-- `protocol` - protocol name with possible values: `http` or `https` [string, optional]
 - `ssl` - ssl parameters [object, required only on case of `protocol` equal to `https`]
     - `key` - local path to `key.pem` file
-    - `cert` - local path to `cert.pem` file
+    - `cert` - local path to `cert.crt` file
 - `creds` - [node-sp-auth](https://github.com/s-KaiNet/node-sp-auth) creds options for SPSave and custom monitoring action provisioning [object, optional for `sp-live-reload` itself]
 
 `creds` and `spsaveCreds` are identical as the modules use the same core authentication module.
@@ -95,11 +96,19 @@ openssl req -new -key key.pem -out csr.pem
 ```
 
 ```bash
-openssl x509 -req -days 9999 -in csr.pem -signkey key.pem -out cert.pem
+openssl x509 -req -days 9999 -in csr.pem -signkey key.pem -out cert.crt
 rm csr.pem
 ```
 
 3\. Add cert to trusted
+
+Depending on your client OS, add `cert.crt` to Trusted root certificates.
+
+- Install certificate
+- Local computer
+- Trusted root certificates
+
+[Manual for Windows](https://blogs.technet.microsoft.com/sbs/2008/05/08/installing-a-self-signed-certificate-as-a-trusted-root-ca-in-windows-vista/).
 
 ### Installation in SharePoint site collection
 
