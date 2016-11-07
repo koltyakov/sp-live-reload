@@ -108,6 +108,21 @@ gulp.task("watch-live", function () {
 
 For making initial dive in with the library easier Yeoman [generator-sppp](https://github.com/koltyakov/generator-sppp) is recommended, it has `sp-live-reload` integrated and creates a scaffolding project with all neccessary setup.
 
+### CDN scenario
+
+In case of publishing scripts to a CDN (to the different [from SharePoint] domain) raw path should be passed to `emitUpdatePath` method:
+
+```javascript
+...
+liveReload.emitUpdatedPath(rawPath, true);
+...
+```
+
+Second parameter equal `true`, tells emitter to prevent the path value from any local transformation.
+
+By default, the path is transformed from the local one (`D:\Projects\ProjectName\src\folder\you_file_path.ext`) to a relative SharePoint path (`/sites/collection/subweb/_catalogs/masterpage/folder/you_file_path.ext`).
+Where `watchBase` = ``D:\Projects\ProjectName\src`, `siteUrl` = `https://sphost/sites/collection/subweb` and `spFolder` = `_catalogs/masterpage`.
+
 ### HTTPS / SSL
 
 For https hosts like SharePoint online self-signed sertificate should be generated and added to trusted one.
