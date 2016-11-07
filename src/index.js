@@ -11,10 +11,9 @@ spf.liveReload = function(settings) {
     _self.settings.protocol = settings.protocol || (_self.settings.siteUrl.indexOf("https://") !== -1 ? "https" : "http");
 
     _self.emitUpdatedPath = function(filePath) {
-        filePath = filePath
-            .replace(path.join(_self.settings.watchBase), _self.settings.siteUrl + "/" + _self.settings.spFolder)
-            .replace(/\\/g, "/").replace("://", "").replace(/\/\//g,'/')
-            .replace(_self.settings.siteUrl.replace("://", "").split("/")[0], "");
+        var spRelUrl = (_self.settings.siteUrl + "/" + _self.settings.spFolder.replace(/\\/g, "/"));
+        spRelUrl = spRelUrl.replace("://", "").replace(_self.settings.siteUrl.replace("://", "").split("/")[0], "").replace(/\/\//g,'/');
+        filePath = filePath.replace(path.join(_self.settings.watchBase), spRelUrl).replace(/\\/g, "/").replace(/\/\//g,'/');
         _self.io.emit('liveReload', filePath);
     };
 

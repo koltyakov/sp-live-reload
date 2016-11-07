@@ -1,6 +1,6 @@
 {
   "name": "sp-live-reload",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "SharePoint pages live reload module for client side development",
   "main": "./src/index.js",
   "scripts": {

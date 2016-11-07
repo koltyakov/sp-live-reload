@@ -27,7 +27,7 @@ npm install sp-live-reload --save-dev
 
 ### Usage withing Gulp task
 
-#### Watch with live reload
+#### Watch with live reload (SPSave)
 
 ```javascript
 var gulp = require('gulp');
@@ -56,6 +56,39 @@ gulp.task("watch-assets", function () {
     });
 });
 ```
+
+#### Watch with live reload (Gulp-SPSync)
+
+For those, who for some reasons prefer [gulp-spsync](https://github.com/wictorwilen/gulp-spsync) or [gulp-spsync-creds](https://github.com/estruyf/gulp-spsync-creds) over `spsave`, the following structure is applicable:
+
+```javascript
+var gulp = require('gulp');
+var spsync = require("gulp-spsync");
+var watch = require('gulp-watch');
+var through = require('through2');
+var LiveReload = require('sp-live-reload');
+
+var config = require('./gulp.config');
+
+gulp.task("watch-live", function () {
+    console.log("Watch with reload is initiated");
+    var liveReload = new LiveReload(config.liveReload);
+    liveReload.runServer();
+    return watch(config.watch.assets, function (event) {
+        console.log(event.path);
+        gulp.src(event.path, {
+            base: config.watch.base
+        }).pipe(spsync(spsyncSettings))
+        .pipe(through.obj(function (chunk, enc, cb) {
+            var chunkPath = chunk.path;
+            liveReload.emitUpdatedPath(chunkPath);
+            cb(null, chunk);
+        }));
+    });
+});
+```
+
+> `gulp-spsync` has different idiology for the paths. In case of it `spFolder` in settings always should be equal to "".
 
 ### Arguments
 
