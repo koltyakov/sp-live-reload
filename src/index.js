@@ -13,7 +13,7 @@ spf.liveReload = function(settings) {
     _self.emitUpdatedPath = function(filePath) {
         filePath = filePath
             .replace(path.join(_self.settings.watchBase), _self.settings.siteUrl + "/" + _self.settings.spFolder)
-            .replace(/\\/g, "/").replace("://", "")
+            .replace(/\\/g, "/").replace("://", "").replace(/\/\//g,'/')
             .replace(_self.settings.siteUrl.replace("://", "").split("/")[0], "");
         _self.io.emit('liveReload', filePath);
     };
@@ -84,7 +84,9 @@ spf.liveReload = function(settings) {
             _self.io = require('socket.io')(server);
             server.listen(_self.settings.port, _self.settings.host, function() {
                 console.log('Live reload server is up and running at %s://%s:%s', _self.settings.protocol, _self.settings.host, _self.settings.port);
-                console.log('Make sure that monitoring script (%s://%s:%s/s/live-reload.client.js) is provisioned to SharePoint.', _self.settings.protocol, _self.settings.host, _self.settings.port);
+                console.log('Make sure that:');
+                console.log(' - monitoring script (%s://%s:%s/s/live-reload.client.js) is provisioned to SharePoint.', _self.settings.protocol, _self.settings.host, _self.settings.port);
+                console.log(' - SSL certificate is trusted in the browser.');
             });
         } else {
             var server = require('http').Server(app);
