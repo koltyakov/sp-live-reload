@@ -14,7 +14,8 @@ spf.liveReload = function(settings) {
         filePath = filePath
             .replace(path.join(_self.settings.watchBase), _self.settings.siteUrl + "/" + _self.settings.spFolder)
             .replace(/\\/g, "/").replace("://", "")
-            .replace(_self.settings.siteUrl.replace("://", "").split("/")[0], "");
+            .replace(_self.settings.siteUrl.replace("://", "").split("/")[0], "")
+            .replace('//','/');
         _self.io.emit('liveReload', filePath);
     };
 
