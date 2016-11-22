@@ -66,6 +66,7 @@ spf.liveReload = function(settings) {
                         })
                     );
                 }
+                res.setHeader('content-type', 'text/javascript');
                 res.send(_self.liveReloadClientContent);
                 return;
             } else {
