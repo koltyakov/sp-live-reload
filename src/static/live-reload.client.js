@@ -164,7 +164,7 @@ spf.liveReloadClient = function(settings) {
                         });
 
                         // Masterpage
-                        var masterPageUrl = web.get_masterUrl().toLowerCase();
+                        var masterPageUrl = oWeb.get_masterUrl().toLowerCase();
                         contentLinks.push(masterPageUrl);
 
                         // Publishing page layout
