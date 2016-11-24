@@ -104,7 +104,7 @@ spf.utils.waitForCondition = function(condition, callback, tries, timeout) {
             setTimeout(function() {
                 spf.utils.waitForCondition(condition, callback, tries);
             }, timeout);
-        }	
+        }
     } else {
         if (callback && typeof callback === "function") {
             callback();
@@ -141,10 +141,17 @@ spf.liveReloadClient = function(settings) {
         if (typeof _self.contentLinks === "undefined") {
             ExecuteOrDelayUntilScriptLoaded(function() {
                 var clientContext = new SP.ClientContext(_spPageContextInfo.webServerRelativeUrl);
-                var oFile = clientContext.get_web().getFileByServerRelativeUrl(window.location.pathname);
+                var oWeb = clientContext.get_web();
+                var oList = oWeb.get_lists().getById(_spPageContextInfo.pageListId);
+                var oPageItem = null;
+                var oFile = oWeb.getFileByServerRelativeUrl(window.location.pathname);
                 var limitedWebPartManager = oFile.getLimitedWebPartManager(SP.WebParts.PersonalizationScope.shared);
                 var collWebPart = limitedWebPartManager.get_webParts();
-                clientContext.load(collWebPart,'Include(WebPart.Properties)');
+                if (_spPageContextInfo.pageItemId) {
+                    oPageItem = oList.getItemById(_spPageContextInfo.pageItemId);
+                    clientContext.load(oPageItem);
+                }
+                clientContext.load(collWebPart, 'Include(WebPart.Properties)');
                 clientContext.executeQueryAsync(
                     function () {
                         var webPartsDef = collWebPart.get_data();
@@ -155,6 +162,21 @@ spf.liveReloadClient = function(settings) {
                                 contentLinks.push(contentLink.toLowerCase());
                             }
                         });
+
+                        // Masterpage
+                        var masterPageUrl = web.get_masterUrl().toLowerCase();
+                        contentLinks.push(masterPageUrl);
+
+                        // Publishing page layout
+                        if (_spPageContextInfo.pageItemId) {
+                            var layoutUrl = oPageItem.get_fieldValues()["PublishingPageLayout"];
+                            if (typeof layoutUrl !== "undefined") {
+                                layoutUrl = layoutUrl.get_url();
+                                layoutUrl = "/_catalogs" + layoutUrl.split("/_catalogs")[1];
+                                contentLinks.push(masterPageUrl);
+                            }
+                        }
+
                         _self.contentLinks = contentLinks;
                         if (callback && typeof callback === "function") {
                             callback([].concat(contentLinks, scriptLinks, stylesLinks));
@@ -170,10 +192,6 @@ spf.liveReloadClient = function(settings) {
                 callback([].concat(_self.contentLinks, scriptLinks, stylesLinks));
             }
         }
-
-        // ToDo:
-        // - masterpage reload
-        // - page layout reload
     };
 
     var devBaseUrl = settings.protocol + '://' + settings.host + ':' + settings.port;

@@ -1,10 +1,10 @@
 {
   "name": "sp-live-reload",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "SharePoint pages live reload module for client side development",
   "main": "./src/index.js",
   "scripts": {
-    "preinstall": "npm list typings -g || npm install typings -g",
+    "// preinstall": "npm list typings -g || npm install typings -g",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
