@@ -151,6 +151,7 @@ spf.liveReloadClient = function(settings) {
                     oPageItem = oList.getItemById(_spPageContextInfo.pageItemId);
                     clientContext.load(oPageItem);
                 }
+                clientContext.load(oWeb);
                 clientContext.load(collWebPart, 'Include(WebPart.Properties)');
                 clientContext.executeQueryAsync(
                     function () {
@@ -173,7 +174,8 @@ spf.liveReloadClient = function(settings) {
                             if (typeof layoutUrl !== "undefined") {
                                 layoutUrl = layoutUrl.get_url();
                                 layoutUrl = "/_catalogs" + layoutUrl.split("/_catalogs")[1];
-                                contentLinks.push(masterPageUrl);
+                                layoutUrl = layoutUrl.toLowerCase();
+                                contentLinks.push(layoutUrl);
                             }
                         }
 
