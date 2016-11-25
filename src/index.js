@@ -49,13 +49,13 @@ spf.liveReload = function(settings) {
 
         var staticRouter = express.Router();
         staticRouter.get("/*", function(req, res) {
-            if (req.url === "/socket.io.js") {
-                var staticRoot = path.join(__dirname, "/../../", "/socket.io-client/socket.io.js");
+            if (req.url.indexOf("/socket.io") !== -1) {
+                var staticRoot = path.join(__dirname, "/../../", "/socket.io-client" + req.url);
                 res.sendFile(staticRoot);
                 return;
             } else if (req.url === "/live-reload.client.js") {
                 if (typeof _self.liveReloadClientContent === "undefined") {
-                    var liveReloadClientPath = path.join(__dirname + "/static/live-reload.client.js");
+                    var liveReloadClientPath = path.join(__dirname + "/static" + req.url);
                     _self.liveReloadClientContent = String(fs.readFileSync(liveReloadClientPath));
                     _self.liveReloadClientContent = _self.liveReloadClientContent.replace(
                         '"##settings#"',
