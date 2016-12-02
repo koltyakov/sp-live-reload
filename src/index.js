@@ -50,7 +50,6 @@ spf.liveReload = function(settings) {
         var staticRouter = express.Router();
         staticRouter.get("/*", function(req, res) {
             if (req.url.indexOf("/socket.io") !== -1) {
-                console.log(req.url);
                 var staticFilePath = path.join(__dirname, "/../../", "/socket.io-client/dist" + req.url);
                 try {
                     fs.accessSync(staticFilePath, fs.F_OK);
