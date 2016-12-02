@@ -52,7 +52,7 @@ spf.liveReload = function(settings) {
             if (req.url.indexOf("/socket.io") !== -1) {
                 var staticFilePath = path.join(__dirname, "/../../", "/socket.io-client/dist" + req.url);
                 try {
-                    fs.accessSync(staticFilePath, fs.F_OK);
+                    fs.statSync(staticFilePath);
                 } catch (e) {
                     staticFilePath = path.join(__dirname, "/../../", "/socket.io-client" + req.url);
                 }
