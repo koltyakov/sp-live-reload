@@ -50,8 +50,14 @@ spf.liveReload = function(settings) {
         var staticRouter = express.Router();
         staticRouter.get("/*", function(req, res) {
             if (req.url.indexOf("/socket.io") !== -1) {
-                var staticRoot = path.join(__dirname, "/../../", "/socket.io-client" + req.url);
-                res.sendFile(staticRoot);
+                console.log(req.url);
+                var staticFilePath = path.join(__dirname, "/../../", "/socket.io-client/dist" + req.url);
+                try {
+                    fs.accessSync(staticFilePath, fs.F_OK);
+                } catch (e) {
+                    staticFilePath = path.join(__dirname, "/../../", "/socket.io-client" + req.url);
+                }
+                res.sendFile(staticFilePath);
                 return;
             } else if (req.url === "/live-reload.client.js") {
                 if (typeof _self.liveReloadClientContent === "undefined") {
