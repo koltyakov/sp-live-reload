@@ -16,6 +16,7 @@ spf.liveReload = function(settings) {
             var spRelUrl = (_self.settings.siteUrl + "/" + _self.settings.spFolder.replace(/\\/g, "/"));
             spRelUrl = spRelUrl.replace("://", "").replace(_self.settings.siteUrl.replace("://", "").split("/")[0], "").replace(/\/\//g,'/');
             filePath = filePath.replace(path.join(_self.settings.watchBase), spRelUrl).replace(/\\/g, "/").replace(/\/\//g,'/');
+            filePath = decodeURIComponent(filePath);
         }
         _self.io.emit('liveReload', filePath);
     };

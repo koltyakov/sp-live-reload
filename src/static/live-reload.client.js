@@ -127,7 +127,7 @@ spf.liveReloadClient = function(settings) {
         var scripts = document.getElementsByTagName("script");
         for (var i = 0, len = scripts.length; i < len; i += 1) {
             if (scripts[i].src.length > 0) {
-                scriptLinks.push(scripts[i].src.replace(basePath, "").split("?")[0].toLowerCase());
+                scriptLinks.push(decodeURIComponent(scripts[i].src.replace(basePath, "").split("?")[0].toLowerCase()));
             }
         }
 
@@ -160,7 +160,7 @@ spf.liveReloadClient = function(settings) {
                         webPartsDef.forEach(function(wpd) {
                             var contentLink = wpd.get_webPart().get_properties().get_fieldValues()["ContentLink"];
                             if (typeof contentLink !== "undefined") {
-                                contentLinks.push(contentLink.toLowerCase());
+                                contentLinks.push(decodeURIComponent(contentLink.toLowerCase()));
                             }
                         });
 
@@ -175,7 +175,7 @@ spf.liveReloadClient = function(settings) {
                                 layoutUrl = layoutUrl.get_url();
                                 layoutUrl = "/_catalogs" + layoutUrl.split("/_catalogs")[1];
                                 layoutUrl = layoutUrl.toLowerCase();
-                                contentLinks.push(layoutUrl);
+                                contentLinks.push(decodeURIComponent(layoutUrl));
                             }
                         }
 
