@@ -1,0 +1,12 @@
+{
+  "name": "sp-live-reload-test",
+  "version": "1.0.0",
+  "description": "SharePoint pages live reload module for client side development - quick test",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-spsave": "^3.0.0",
+    "gulp-watch": "^4.3.11",
+    "node-sp-auth-config": "^1.0.9",
+    "through2": "^2.0.3"
+  }
+}

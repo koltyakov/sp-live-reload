@@ -30,29 +30,29 @@ npm install sp-live-reload --save-dev
 #### Watch with live reload (SPSave)
 
 ```javascript
-var gulp = require('gulp');
-var spsave = require("gulp-spsave");
-var watch = require('gulp-watch');
-var through = require('through2');
-var LiveReload = require('sp-live-reload');
+const gulp = require('gulp');
+const spsave = require("gulp-spsave");
+const watch = require('gulp-watch');
+const through = require('through2');
+const LiveReload = require('sp-live-reload');
 
-var config = require('./gulp.config');
+let config = require('./config');
 
 gulp.task("watch-assets", function () {
     console.log("Watch with reload is initiated.");
     console.log("Make sure that monitoring script is provisioned to SharePoint.");
-    var liveReload = new LiveReload(config);
+    const liveReload = new LiveReload(config);
     liveReload.runServer();
-    return watch(config.watchAssets, function (event) {
+    return watch(config.watchAssets, (event) => {
         console.log(event.path);
-        gulp.src(event.path, {
-            base: config.watchBase
-        }).pipe(spsave(config.spsaveCoreOptions, config.spsaveCreds))
-        .pipe(through.obj(function (chunk, enc, cb) {
-            var chunkPath = chunk.path;
-            liveReload.emitUpdatedPath(chunkPath);
-            cb(null, chunk);
-        }));
+        gulp
+            .src(event.path, { base: config.watchBase })
+            .pipe(spsave(config.spSaveCoreOptions, config.spSaveCreds))
+            .pipe(through.obj((chunk, enc, cb) => {
+                let chunkPath = chunk.path;
+                liveReload.emitUpdatedPath(chunkPath);
+                cb(null, chunk);
+            }));
     });
 });
 ```
@@ -62,28 +62,28 @@ gulp.task("watch-assets", function () {
 For those, who for some reasons prefer [gulp-spsync](https://github.com/wictorwilen/gulp-spsync) or [gulp-spsync-creds](https://github.com/estruyf/gulp-spsync-creds) over `spsave`, the following structure is applicable:
 
 ```javascript
-var gulp = require('gulp');
-var spsync = require("gulp-spsync");
-var watch = require('gulp-watch');
-var through = require('through2');
-var LiveReload = require('sp-live-reload');
+const gulp = require('gulp');
+const spsync = require("gulp-spsync");
+const watch = require('gulp-watch');
+const through = require('through2');
+const LiveReload = require('sp-live-reload');
 
-var config = require('./gulp.config');
+let config = require('./config');
 
 gulp.task("watch-live", function () {
     console.log("Watch with reload is initiated");
-    var liveReload = new LiveReload(config.liveReload);
+    const liveReload = new LiveReload(config.liveReload);
     liveReload.runServer();
-    return watch(config.watch.assets, function (event) {
+    return watch(config.watchAssets, (event) => {
         console.log(event.path);
-        gulp.src(event.path, {
-            base: config.watch.base
-        }).pipe(spsync(spsyncSettings))
-        .pipe(through.obj(function (chunk, enc, cb) {
-            var chunkPath = chunk.path;
-            liveReload.emitUpdatedPath(chunkPath);
-            cb(null, chunk);
-        }));
+        gulp
+            .src(event.path, { base: config.watchBase })
+            .pipe(spsync(spSyncSettings))
+            .pipe(through.obj((chunk, enc, cb) => {
+                let chunkPath = chunk.path;
+                liveReload.emitUpdatedPath(chunkPath);
+                cb(null, chunk);
+            }));
     });
 });
 ```
@@ -93,20 +93,25 @@ gulp.task("watch-live", function () {
 ### Arguments
 
 - `siteUrl` - SharePoint site (SPWeb) url [string, required]
+- `watchBase` - base path from which files in a local project are mapped to remote location [string, required]
+- `spFolder` - root folder relative (to `siteUrl`) path in SharePoint mapped to a project [string, required]
+
+- `creds` - [node-sp-auth](https://github.com/s-KaiNet/node-sp-auth) creds options for SPSave and custom monitoring action provisioning [object, optional for `sp-live-reload` itself]
+
 - `protocol` - protocol name with possible values: `http` or `https` [string, optional]
 - `host` - host name or ip, where the live reload server will be running [string, optional, default: `localhost`]
 - `port` - SharePoint site (SPWeb) url [string, optional, default: `3000`]
-- `watchBase` - base path from which files in a local project are mapped to remote location [string, required]
-- `spFolder` - root folder relative (to `siteUrl`) path in SharePoint mapped to a project [string, required]
 - `ssl` - ssl parameters [object, required only on case of `protocol` equal to `https`]
     - `key` - local path to `key.pem` file
     - `cert` - local path to `cert.crt` file
-- `creds` - [node-sp-auth](https://github.com/s-KaiNet/node-sp-auth) creds options for SPSave and custom monitoring action provisioning [object, optional for `sp-live-reload` itself]
 
-`creds` and `spsaveCreds` are identical as the modules use the same core authentication module.
-`spsaveCoreOptions` can be checked [here](https://github.com/s-KaiNet/spsave#core-options).
+`creds` and `spSaveCreds` are identical as the modules use the same core authentication module.
+`spSaveCoreOptions` can be checked [here](https://github.com/s-KaiNet/spsave#core-options).
 
 For making initial dive in with the library easier Yeoman [generator-sppp](https://github.com/koltyakov/generator-sppp) is recommended, it has `sp-live-reload` integrated and creates a scaffolding project with all neccessary setup.
+
+[`node-sp-auth-config`](https://github.com/koltyakov/node-sp-auth-config) is recommended for building SPSave credential options.
+See for the [example](https://github.com/koltyakov/sp-live-reload/blob/master/test/gulpfile.js).
 
 ### CDN scenario
 
