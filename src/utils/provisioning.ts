@@ -150,7 +150,7 @@ export default class ReloadProvisioning {
         return spauth.getAuth(this.ctx.siteUrl, this.ctx.creds);
     }
 
-    private getCachedRequest(spr): sprequest.ISPRequest {
+    private getCachedRequest(spr: sprequest.ISPRequest): sprequest.ISPRequest {
         this.spr = this.spr || sprequest.create(this.ctx.creds);
         return spr;
     }
