@@ -186,11 +186,13 @@ Source:
 gulp.task("live-reload-install", function () {
     console.log("Installing live reload to site collection.");
     var liveReload = new LiveReload(config);
-    liveReload.provisionMonitoringAction(function() {
-        console.log("Custom action has been installed");
-    }, function(err) {
-        console.log(err.message);
-    });
+    liveReload.provisionMonitoringAction()
+        .then(() => {
+            console.log("Custom action has been installed");
+        })
+        .catch((err) => {
+            console.log(err.message);
+        });
 });
 ```
 
@@ -208,11 +210,13 @@ Source:
 gulp.task("live-reload-unistall", function () {
     console.log("Retracting live reload from site collection.");
     var liveReload = new LiveReload(liveReloadConfig);
-    liveReload.retractMonitoringAction(function() {
-        console.log("Custom action has been retracted");
-    }, function(err) {
-        console.log(err.message);
-    });
+    liveReload.retractMonitoringAction()
+        .then(() => {
+            console.log("Custom action has been retracted");
+        })
+        .catch((err) => {
+            console.log(err.message);
+        });
 });
 ```
 

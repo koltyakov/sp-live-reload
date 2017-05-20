@@ -41,7 +41,6 @@ export default class ReloadProvisioning {
                     resolve(response.body.d);
                 });
         });
-        // ServerRelativeUrl, Url
     }
 
     public provisionMonitoringAction(): Promise<any> {
