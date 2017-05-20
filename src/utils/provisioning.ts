@@ -25,7 +25,7 @@ export default class ReloadProvisioning {
 
     public getSiteUserCustomActions(): Promise<any> {
         return new Promise((resolve, reject) => {
-            this.spr = this.getCachedRequest(this.spr);
+            this.spr = this.getCachedRequest();
             this.spr.get(`${this.ctx.siteUrl}/_api/site/usercustomactions`)
                 .then((response: any) => {
                     resolve(response.body.d.results);
