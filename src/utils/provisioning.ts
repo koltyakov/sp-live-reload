@@ -20,7 +20,7 @@ export default class ReloadProvisioning {
             host: settings.host || 'localhost',
             protocol: settings.protocol || settings.siteUrl.indexOf('https://') !== -1 ? 'https' : 'http'
         };
-        this.spr = this.getCachedRequest(this.spr);
+        this.spr = this.getCachedRequest();
     }
 
     public getSiteUserCustomActions(): Promise<any> {
@@ -35,7 +35,7 @@ export default class ReloadProvisioning {
 
     public getSiteData(): Promise<any> {
         return new Promise((resolve, reject) => {
-            this.spr = this.getCachedRequest(this.spr);
+            this.spr = this.getCachedRequest();
             this.spr.get(`${this.ctx.siteUrl}/_api/site`)
                 .then((response: any) => {
                     resolve(response.body.d);
@@ -105,7 +105,7 @@ export default class ReloadProvisioning {
     }
 
     private provisionCustomAction(): Promise<any> {
-        this.spr = this.getCachedRequest(this.spr);
+        this.spr = this.getCachedRequest();
         let reqBody = {
             '__metadata': {
                 'type': 'SP.UserCustomAction'
@@ -131,7 +131,7 @@ export default class ReloadProvisioning {
     }
 
     private deleteCustomAction(customActionId): Promise<any> {
-        this.spr = this.getCachedRequest(this.spr);
+        this.spr = this.getCachedRequest();
         return this.spr.requestDigest(this.ctx.siteUrl)
             .then((digest) => {
                 return this.spr.post(`${this.ctx.siteUrl}/_api/site/usercustomactions('${customActionId}')`, {
@@ -150,9 +150,8 @@ export default class ReloadProvisioning {
         return spauth.getAuth(this.ctx.siteUrl, this.ctx.creds);
     }
 
-    private getCachedRequest(spr: sprequest.ISPRequest): sprequest.ISPRequest {
-        this.spr = this.spr || sprequest.create(this.ctx.creds);
-        return spr;
+    private getCachedRequest(): sprequest.ISPRequest {
+        return this.spr || sprequest.create(this.ctx.creds);
     }
 
 }
