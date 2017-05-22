@@ -40,8 +40,7 @@ class LiveReload {
         const staticRouter = express.Router();
         staticRouter.get('/*', (req, res) => {
             if (req.url.indexOf('/socket.io') !== -1) {
-                console.log(__dirname);
-                let staticFilePath = path.join(__dirname, '/../node_modules', '/socket.io-client/dist' + req.url);
+                let staticFilePath = path.join(process.cwd(), 'node_modules', '/socket.io-client/dist' + req.url);
                 res.sendFile(staticFilePath);
                 return;
             } else if (req.url === '/live-reload.client.js') {
