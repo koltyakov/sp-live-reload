@@ -18,7 +18,7 @@ class LiveReload {
             ...settings,
             port: settings.port || 3000,
             host: settings.host || 'localhost',
-            protocol: settings.protocol || settings.siteUrl.indexOf('https://') !== -1 ? 'https' : 'http'
+            protocol: settings.protocol || (settings.siteUrl.indexOf('https://') !== -1 ? 'https' : 'http')
         };
         this.provisioning = new Provisioning(this.settings);
     }
@@ -65,6 +65,8 @@ class LiveReload {
             }
         });
         app.use('/s', staticRouter);
+
+        console.log(this.settings.protocol);
 
         if (this.settings.protocol === 'https') {
             if (typeof this.settings.ssl === 'undefined') {

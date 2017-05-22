@@ -4,4 +4,8 @@
 npm-debug.log
 /src
 /docs
+gulpfile.jsonjsconfig.json
+README.md
+tsconfig.json
+tslint.json
 !/dist
