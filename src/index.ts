@@ -1,6 +1,5 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import * as Promise from 'bluebird';
 import * as express from 'express';
 
 import Provisioning from './utils/provisioning';
