@@ -1,6 +1,5 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import * as Promise from 'bluebird';
 import { spsave } from 'spsave';
 import * as spauth from 'node-sp-auth';
 import * as request from 'request-promise';
@@ -100,7 +99,7 @@ export default class ReloadProvisioning {
             fileContent: fileContent,
             folder: '_catalogs/masterpage/spf/dev'
         };
-        return spsave(core, this.ctx.creds, fileOptions);
+        return <any>spsave(core, this.ctx.creds, fileOptions);
     }
 
     private provisionCustomAction(): Promise<any> {
@@ -116,7 +115,7 @@ export default class ReloadProvisioning {
             'Sequence': '10000'
         };
 
-        return this.spr.requestDigest(this.ctx.siteUrl)
+        return <any>this.spr.requestDigest(this.ctx.siteUrl)
             .then((digest) => {
                 return this.spr.post(`${this.ctx.siteUrl}/_api/site/usercustomactions`, {
                     headers: {
@@ -131,7 +130,7 @@ export default class ReloadProvisioning {
 
     private deleteCustomAction(customActionId): Promise<any> {
         this.spr = this.getCachedRequest();
-        return this.spr.requestDigest(this.ctx.siteUrl)
+        return <any>this.spr.requestDigest(this.ctx.siteUrl)
             .then((digest) => {
                 return this.spr.post(`${this.ctx.siteUrl}/_api/site/usercustomactions('${customActionId}')`, {
                     headers: {
@@ -146,7 +145,7 @@ export default class ReloadProvisioning {
     }
 
     private getAuthOptions(): Promise<spauth.IAuthResponse> {
-        return spauth.getAuth(this.ctx.siteUrl, this.ctx.creds);
+        return <any>spauth.getAuth(this.ctx.siteUrl, this.ctx.creds);
     }
 
     private getCachedRequest(): sprequest.ISPRequest {
