@@ -5,6 +5,10 @@
 [![npm version](https://badge.fury.io/js/sp-live-reload.svg)](https://badge.fury.io/js/sp-live-reload)
 [![Downloads](https://img.shields.io/npm/dm/sp-live-reload.svg)](https://www.npmjs.com/package/sp-live-reload)
 
+---
+### Need help on SharePoint with Node.js? Join our gitter chat and ask question! [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/sharepoint-node/Lobby)
+---
+
 The module allows arranging live reload capability on SharePoint host pages on frontend assets changing and publishing.
 
 ## Supported SharePoint versions
