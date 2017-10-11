@@ -101,7 +101,7 @@ gulp.task("watch-live", function () {
 
 - `protocol` - protocol name with possible values: `http` or `https` [string, optional]
 - `host` - host name or ip, where the live reload server will be running [string, optional, default: `localhost`]
-- `port` - SharePoint site (SPWeb) url [string, optional, default: `3000`]
+- `port` - port number [string, optional, default: `3000`]
 - `ssl` - ssl parameters [object, required only on case of `protocol` equal to `https`]
     - `key` - local path to `key.pem` file
     - `cert` - local path to `cert.crt` file
