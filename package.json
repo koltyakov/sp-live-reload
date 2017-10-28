@@ -26,9 +26,9 @@
   },
   "homepage": "https://github.com/koltyakov/sp-live-reload#readme",
   "dependencies": {
-    "express": "^4.15.4",
-    "socket.io": "^2.0.3",
-    "sp-request": "^2.1.0",
+    "express": "^4.16.2",
+    "socket.io": "^2.0.4",
+    "sp-request": "^2.1.1",
     "spsave": "^3.1.0",
     "yargs": "^8.0.2"
   },
@@ -44,6 +44,7 @@
     "merge-stream": "^1.0.1",
     "ts-node": "^3.3.0",
     "tslint": "^5.6.0",
+    "tslint-config-standard": "^7.0.0",
     "typescript": "^2.4.2"
   }
 }
