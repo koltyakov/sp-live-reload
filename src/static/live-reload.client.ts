@@ -1,3 +1,5 @@
+'use strict';
+
 declare const window: any;
 declare const ExecuteOrDelayUntilScriptLoaded: any;
 declare const document: any;
@@ -6,7 +8,7 @@ declare const SP: any;
 declare const _spPageContextInfo: any;
 declare const io: any;
 
-interface ILRClientSettings {
+export interface ILRClientSettings {
   protocol?: string;
   host?: string;
   port?: number;
@@ -127,7 +129,7 @@ namespace spf.utils {
 
 }
 
-class LiveReloadClient {
+export class LiveReloadClient {
 
   private settings: ILRClientSettings;
   private devBaseUrl: string;
