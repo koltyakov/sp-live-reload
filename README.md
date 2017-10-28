@@ -40,21 +40,21 @@ const LiveReload = require('sp-live-reload');
 let config = require('./config');
 
 gulp.task("watch-assets", function () {
-    console.log("Watch with reload is initiated.");
-    console.log("Make sure that monitoring script is provisioned to SharePoint.");
-    const liveReload = new LiveReload(config);
-    liveReload.runServer();
-    return watch(config.watchAssets, (event) => {
-        console.log(event.path);
-        gulp
-            .src(event.path, { base: config.watchBase })
-            .pipe(spsave(config.spSaveCoreOptions, config.spSaveCreds))
-            .pipe(through.obj((chunk, enc, cb) => {
-                let chunkPath = chunk.path;
-                liveReload.emitUpdatedPath(chunkPath);
-                cb(null, chunk);
-            }));
-    });
+  console.log("Watch with reload is initiated.");
+  console.log("Make sure that monitoring script is provisioned to SharePoint.");
+  const liveReload = new LiveReload(config);
+  liveReload.runServer();
+  return watch(config.watchAssets, (event) => {
+    console.log(event.path);
+    gulp
+      .src(event.path, { base: config.watchBase })
+      .pipe(spsave(config.spSaveCoreOptions, config.spSaveCreds))
+      .pipe(through.obj((chunk, enc, cb) => {
+        let chunkPath = chunk.path;
+        liveReload.emitUpdatedPath(chunkPath);
+        cb(null, chunk);
+      }));
+  });
 });
 ```
 
@@ -72,20 +72,20 @@ const LiveReload = require('sp-live-reload');
 let config = require('./config');
 
 gulp.task("watch-live", function () {
-    console.log("Watch with reload is initiated");
-    const liveReload = new LiveReload(config.liveReload);
-    liveReload.runServer();
-    return watch(config.watchAssets, (event) => {
-        console.log(event.path);
-        gulp
-            .src(event.path, { base: config.watchBase })
-            .pipe(spsync(spSyncSettings))
-            .pipe(through.obj((chunk, enc, cb) => {
-                let chunkPath = chunk.path;
-                liveReload.emitUpdatedPath(chunkPath);
-                cb(null, chunk);
-            }));
-    });
+  console.log("Watch with reload is initiated");
+  const liveReload = new LiveReload(config.liveReload);
+  liveReload.runServer();
+  return watch(config.watchAssets, (event) => {
+    console.log(event.path);
+    gulp
+      .src(event.path, { base: config.watchBase })
+      .pipe(spsync(spSyncSettings))
+      .pipe(through.obj((chunk, enc, cb) => {
+        let chunkPath = chunk.path;
+        liveReload.emitUpdatedPath(chunkPath);
+        cb(null, chunk);
+      }));
+  });
 });
 ```
 
@@ -103,8 +103,8 @@ gulp.task("watch-live", function () {
 - `host` - host name or ip, where the live reload server will be running [string, optional, default: `localhost`]
 - `port` - port number [string, optional, default: `3000`]
 - `ssl` - ssl parameters [object, required only on case of `protocol` equal to `https`]
-    - `key` - local path to `key.pem` file
-    - `cert` - local path to `cert.crt` file
+  - `key` - local path to `key.pem` file
+  - `cert` - local path to `cert.crt` file
 
 `creds` and `spSaveCreds` are identical as the modules use the same core authentication module.
 `spSaveCoreOptions` can be checked [here](https://github.com/s-KaiNet/spsave#core-options).
@@ -127,7 +127,7 @@ liveReload.emitUpdatedPath(rawPath, true);
 Second parameter equal `true`, tells emitter to prevent the path value from any local transformation.
 
 By default, the path is transformed from the local one (`D:\Projects\ProjectName\src\folder\you_file_path.ext`) to a relative SharePoint path (`/sites/collection/subweb/_catalogs/masterpage/folder/you_file_path.ext`).
-Where `watchBase` = ``D:\Projects\ProjectName\src`, `siteUrl` = `https://sphost/sites/collection/subweb` and `spFolder` = `_catalogs/masterpage`.
+Where `watchBase` = ``D:\Projects\ProjectName\src`, `siteUrl` = `<https://sphost/sites/collection/subweb>` and `spFolder` = `_catalogs/masterpage`.
 
 ### HTTPS / SSL
 
@@ -182,18 +182,18 @@ gulp live-reload-install
 Source:
 
 ```javascript
-// ... 
+// ...
 
 gulp.task("live-reload-install", function () {
-    console.log("Installing live reload to site collection.");
-    var liveReload = new LiveReload(config);
-    liveReload.provisionMonitoringAction()
-        .then(() => {
-            console.log("Custom action has been installed");
-        })
-        .catch((err) => {
-            console.log(err.message);
-        });
+  console.log("Installing live reload to site collection.");
+  var liveReload = new LiveReload(config);
+  liveReload.provisionMonitoringAction()
+    .then(() => {
+      console.log("Custom action has been installed");
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
 });
 ```
 
@@ -206,18 +206,18 @@ gulp live-reload-unistall
 Source:
 
 ```javascript
-// ... 
+// ...
 
 gulp.task("live-reload-unistall", function () {
-    console.log("Retracting live reload from site collection.");
-    var liveReload = new LiveReload(liveReloadConfig);
-    liveReload.retractMonitoringAction()
-        .then(() => {
-            console.log("Custom action has been retracted");
-        })
-        .catch((err) => {
-            console.log(err.message);
-        });
+  console.log("Retracting live reload from site collection.");
+  var liveReload = new LiveReload(liveReloadConfig);
+  liveReload.retractMonitoringAction()
+    .then(() => {
+      console.log("Custom action has been retracted");
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
 });
 ```
 
