@@ -39,12 +39,12 @@ class LiveReload {
     const staticRouter = express.Router();
     staticRouter.get('/*', (req, res) => {
       if (req.url.indexOf('/socket.io') !== -1) {
-        let staticFilePath = path.join(process.cwd(), 'node_modules', '/socket.io-client/dist' + req.url);
+        let staticFilePath = path.join(process.cwd(), 'node_modules', '/socket.io-client/dist', req.url.split('?')[0]);
         res.sendFile(staticFilePath);
         return;
-      } else if (req.url === '/live-reload.client.js') {
+      } else if (req.url.indexOf('/live-reload.client.js') !== -1) {
         if (typeof this.liveReloadClientContent === 'undefined') {
-          let liveReloadClientPath = path.join(__dirname + '/static' + req.url);
+          let liveReloadClientPath = path.join(__dirname, '/static', req.url.split('?')[0]);
           let confString: string = JSON.stringify({
             protocol: this.settings.protocol,
             host: this.settings.host,
@@ -57,8 +57,8 @@ class LiveReload {
         res.send(this.liveReloadClientContent);
         return;
       } else {
-        let staticRoot = path.join(__dirname + '/static');
-        res.sendFile(path.join(staticRoot, req.url));
+        let staticRoot = path.join(__dirname, '/static');
+        res.sendFile(path.join(staticRoot, req.url.split('?')[0]));
         return;
       }
     });

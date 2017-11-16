@@ -1,14 +1,8 @@
+/// <reference path="./../../node_modules/@types/sharepoint/index.d.ts" />
+
 'use strict';
 
-declare const window: any;
-declare const ExecuteOrDelayUntilScriptLoaded: any;
-declare const document: any;
-declare const SPClientTemplates: any;
-declare const SP: any;
-declare const _spPageContextInfo: any;
-declare const io: any;
-
-export interface ILRClientSettings {
+interface ILRClientSettings {
   protocol?: string;
   host?: string;
   port?: number;
@@ -16,8 +10,11 @@ export interface ILRClientSettings {
 
 namespace spf.utils {
 
+  declare let window: any;
+  declare let document: any;
+
   export const replaceUrlTokens = (a: string): string => {
-    let c = window._spPageContextInfo;
+    let c = _spPageContextInfo;
     if (a == null || a === '' || c == null) {
       return '';
     }
@@ -73,7 +70,7 @@ namespace spf.utils {
 
     switch (fileExt) {
       case 'css':
-        links = document.querySelectorAll(`link[href='${filename}']`);
+        links = document.querySelectorAll(`link[href='${filename}']`) as any;
         if (links.length === 0) {
           if (addtype === 'vanilla') {
             let fileref = document.createElement('link');
@@ -90,7 +87,7 @@ namespace spf.utils {
         }
         break;
       case 'js':
-        links = document.querySelectorAll(`script[src='${filename}']`);
+        links = document.querySelectorAll(`script[src='${filename}']`) as any;
         if (links.length === 0) {
           if (addtype === 'vanilla') {
             let fileref = document.createElement('script');
@@ -129,131 +126,138 @@ namespace spf.utils {
 
 }
 
-export class LiveReloadClient {
+namespace spf {
 
-  private settings: ILRClientSettings;
-  private devBaseUrl: string;
-  private contentLinks: string[];
+  declare let io: any;
 
-  constructor (settings: ILRClientSettings) {
-    this.settings = {
-      ...settings,
-      protocol: settings.protocol || window.location.protocol.replace(':', ''),
-      host: settings.host || 'localhost',
-      port: settings.port || 3000
-    };
-    this.devBaseUrl = `${this.settings.protocol}://${this.settings.host}:${this.settings.port}`.replace(':80', '').replace(':443', '');
-  }
+  export class LiveReloadClient {
 
-  public init () {
-    spf.utils.addFileLink(`${this.devBaseUrl}/s/socket.io.js`);
-    spf.utils.waitForCondition(() => {
-      return typeof io !== 'undefined';
-    }, () => {
-      let socket = io.connect(this.devBaseUrl);
-      socket.on('liveReload', (data: any) => {
-        data = (data || '').toLowerCase();
-        this.getPageResources((pageRes: string) => {
-          if (pageRes.indexOf(data) !== -1) {
-            if (data.indexOf('.css') !== -1) {
-              let styles: any[] = Array.prototype.slice.call(document.getElementsByTagName('link'));
-              styles.forEach((style: any) => {
-                if (style.href.length > 0) {
-                  if (style.href.indexOf(data) !== -1) {
-                    style.href = `${data}?d=${(new Date()).getTime()}`;
+    private settings: ILRClientSettings;
+    private devBaseUrl: string;
+    private contentLinks: string[];
+    private socketConnectionTries: number;
+
+    constructor (settings: ILRClientSettings) {
+      this.settings = {
+        ...settings,
+        protocol: settings.protocol || window.location.protocol.replace(':', ''),
+        host: settings.host || 'localhost',
+        port: settings.port || 3000
+      };
+      this.devBaseUrl = `${this.settings.protocol}://${this.settings.host}:${this.settings.port}`.replace(':80', '').replace(':443', '');
+    }
+
+    public init = (): void => {
+      spf.utils.addFileLink(`${this.devBaseUrl}/s/socket.io.js`);
+      spf.utils.waitForCondition(() => {
+        return typeof io !== 'undefined';
+      }, () => {
+        let socket = io.connect(this.devBaseUrl);
+        socket.on('liveReload', (data: any) => {
+          data = (data || '').toLowerCase();
+          this.getPageResources((pageRes: string) => {
+            if (pageRes.indexOf(data) !== -1) {
+              if (data.indexOf('.css') !== -1) {
+                let styles: any[] = Array.prototype.slice.call(document.getElementsByTagName('link'));
+                styles.forEach((style: any) => {
+                  if (style.href.length > 0) {
+                    if (style.href.indexOf(data) !== -1) {
+                      style.href = `${data}?d=${(new Date()).getTime()}`;
+                    }
                   }
-                }
-              });
-            } else {
-              window.location.reload();
+                });
+              } else {
+                window.location.reload();
+              }
             }
+          });
+        });
+        socket.on('connect_error', () => {
+          this.socketConnectionTries = (this.socketConnectionTries || 0) + 1;
+          if (this.socketConnectionTries >= 25) {
+            socket.destroy();
           }
         });
-      });
-      socket.on('connect_error', function () {
-        this.socketConnectionTries = (this.socketConnectionTries || 0) + 1;
-        if (this.socketConnectionTries >= 25) {
-          socket.destroy();
+      }, 5);
+    }
+
+    private getPageResources = (callback: Function): void => {
+      let basePath: string = `${window.location.protocol}//${window.location.hostname}`;
+
+      let scriptLinks: string[] = [];
+      let scripts: any[] = Array.prototype.slice.call(document.getElementsByTagName('script'));
+      scripts.forEach((script: any) => {
+        if (script.src.length > 0) {
+          scriptLinks.push(decodeURIComponent(script.src.replace(basePath, '').split('?')[0].toLowerCase()));
         }
       });
-    }, 5);
-  }
 
-  private getPageResources (callback) {
-    let basePath: string = `${window.location.protocol}//${window.location.hostname}`;
-
-    let scriptLinks: string[] = [];
-    let scripts: any[] = Array.prototype.slice.call(document.getElementsByTagName('script'));
-    scripts.forEach((script: any) => {
-      if (script.src.length > 0) {
-        scriptLinks.push(decodeURIComponent(script.src.replace(basePath, '').split('?')[0].toLowerCase()));
-      }
-    });
-
-    let stylesLinks: string[] = [];
-    let styles: any[] = Array.prototype.slice.call(document.getElementsByTagName('link'));
-    styles.forEach((style: any) => {
-      if (style.href.length > 0) {
-        stylesLinks.push(style.href.replace(basePath, '').split('?')[0].toLowerCase());
-      }
-    });
-
-    if (typeof this.contentLinks === 'undefined') {
-      ExecuteOrDelayUntilScriptLoaded(function () {
-        let clientContext = new SP.ClientContext(_spPageContextInfo.webServerRelativeUrl);
-        let oWeb = clientContext.get_web();
-        let oList = oWeb.get_lists().getById(_spPageContextInfo.pageListId);
-        let oPageItem = null;
-        let oFile = oWeb.getFileByServerRelativeUrl(window.location.pathname);
-        let limitedWebPartManager = oFile.getLimitedWebPartManager(SP.WebParts.PersonalizationScope.shared);
-        let collWebPart = limitedWebPartManager.get_webParts();
-        if (_spPageContextInfo.pageItemId) {
-          oPageItem = oList.getItemById(_spPageContextInfo.pageItemId);
-          clientContext.load(oPageItem);
+      let stylesLinks: string[] = [];
+      let styles: any[] = Array.prototype.slice.call(document.getElementsByTagName('link'));
+      styles.forEach((style: any) => {
+        if (style.href.length > 0) {
+          stylesLinks.push(style.href.replace(basePath, '').split('?')[0].toLowerCase());
         }
-        clientContext.load(oWeb);
-        clientContext.load(collWebPart, 'Include(WebPart.Properties)');
-        clientContext.executeQueryAsync(
-          () => {
-            let webPartsDef = collWebPart.get_data();
-            let contentLinks = [];
-            webPartsDef.forEach(function (wpd) {
-              let contentLink = wpd.get_webPart().get_properties().get_fieldValues().ContentLink;
-              if (typeof contentLink !== 'undefined') {
-                contentLinks.push(decodeURIComponent(contentLink.toLowerCase()));
-              }
-            });
+      });
 
-            // Masterpage
-            let masterPageUrl = oWeb.get_masterUrl().toLowerCase();
-            contentLinks.push(masterPageUrl);
-
-            // Publishing page layout
-            if (_spPageContextInfo.pageItemId) {
-              let layoutUrl = oPageItem.get_fieldValues().PublishingPageLayout;
-              if (typeof layoutUrl !== 'undefined') {
-                layoutUrl = layoutUrl.get_url();
-                layoutUrl = '/_catalogs' + layoutUrl.split('/_catalogs')[1];
-                layoutUrl = layoutUrl.toLowerCase();
-                contentLinks.push(decodeURIComponent(layoutUrl));
-              }
-            }
-
-            this.contentLinks = contentLinks;
-            if (callback && typeof callback === 'function') {
-              callback([].concat(contentLinks, scriptLinks, stylesLinks));
-            }
-          },
-          (sender, args) => {
-            console.log(`Error: ${args.get_message()} ${args.get_stackTrace()}`);
+      if (typeof this.contentLinks === 'undefined') {
+        ExecuteOrDelayUntilScriptLoaded(() => {
+          let clientContext = new SP.ClientContext(_spPageContextInfo.webServerRelativeUrl);
+          let oWeb = clientContext.get_web();
+          let oList = oWeb.get_lists().getById(_spPageContextInfo.pageListId);
+          let oPageItem = null;
+          let oFile = oWeb.getFileByServerRelativeUrl(window.location.pathname);
+          let limitedWebPartManager = oFile.getLimitedWebPartManager(SP.WebParts.PersonalizationScope.shared);
+          let collWebPart = limitedWebPartManager.get_webParts();
+          if (_spPageContextInfo.pageItemId) {
+            oPageItem = oList.getItemById(_spPageContextInfo.pageItemId);
+            clientContext.load(oPageItem);
           }
-        );
-      }, 'sp.js');
-    } else {
-      if (callback && typeof callback === 'function') {
-        callback([].concat(this.contentLinks, scriptLinks, stylesLinks));
+          clientContext.load(oWeb);
+          clientContext.load(collWebPart, 'Include(WebPart.Properties)');
+          clientContext.executeQueryAsync(
+            () => {
+              let webPartsDef = collWebPart.get_data();
+              let contentLinks = [];
+              webPartsDef.forEach(wpd => {
+                let contentLink = wpd.get_webPart().get_properties().get_fieldValues().ContentLink;
+                if (typeof contentLink !== 'undefined') {
+                  contentLinks.push(decodeURIComponent(contentLink.toLowerCase()));
+                }
+              });
+
+              // Masterpage
+              let masterPageUrl = oWeb.get_masterUrl().toLowerCase();
+              contentLinks.push(masterPageUrl);
+
+              // Publishing page layout
+              if (_spPageContextInfo.pageItemId) {
+                let layoutUrl = oPageItem.get_fieldValues().PublishingPageLayout;
+                if (typeof layoutUrl !== 'undefined') {
+                  layoutUrl = layoutUrl.get_url();
+                  layoutUrl = '/_catalogs' + layoutUrl.split('/_catalogs')[1];
+                  layoutUrl = layoutUrl.toLowerCase();
+                  contentLinks.push(decodeURIComponent(layoutUrl));
+                }
+              }
+
+              this.contentLinks = contentLinks;
+              if (callback && typeof callback === 'function') {
+                callback([].concat(contentLinks, scriptLinks, stylesLinks));
+              }
+            },
+            (sender, args) => {
+              console.log(`Error: ${args.get_message()} ${args.get_stackTrace()}`);
+            }
+          );
+        }, 'sp.js');
+      } else {
+        if (callback && typeof callback === 'function') {
+          callback([].concat(this.contentLinks, scriptLinks, stylesLinks));
+        }
       }
     }
+
   }
 
 }
@@ -263,5 +267,5 @@ ExecuteOrDelayUntilScriptLoaded(() => {
   if (typeof settings === 'string') {
     settings = {};
   }
-  (new LiveReloadClient(settings)).init();
+  (new spf.LiveReloadClient(settings)).init();
 }, 'sp.js');
