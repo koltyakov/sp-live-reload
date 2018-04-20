@@ -1,14 +1,16 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "module": "commonjs",
+    "module": "esnext",
     "lib": ["es2017", "dom"],
     "sourceMap": true,
     "declaration": true,
     "moduleResolution": "node",
     "noImplicitAny": false,
     "removeComments": true,
-    "types": ["node"]
+    "skipLibCheck": true,
+    "outDir": "tmp",
+    "types": ["node", "sharepoint"]
   },
   "exclude": ["node_modules"]
 }

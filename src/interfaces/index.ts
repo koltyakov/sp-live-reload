@@ -15,3 +15,9 @@ export interface ILRSettings {
   host?: string;
   protocol?: 'https' | 'http';
 }
+
+export interface ILRClientSettings {
+  protocol?: string;
+  host?: string;
+  port?: number;
+}

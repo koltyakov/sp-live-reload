@@ -12,7 +12,7 @@ gulp.task('clean', () => {
   return del(['dist/**']);
 });
 
-gulp.task('prepublish', ['clean'], () => {
+gulp.task('build', ['clean'], () => {
   let tsSourcesResult = gulp
     .src(['./src/**/*.ts'])
     .pipe(tsc.createProject('tsconfig.json')());

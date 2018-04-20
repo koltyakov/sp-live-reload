@@ -44,7 +44,7 @@ export default class ReloadProvisioning {
 
   public provisionMonitoringAction (): Promise<any> {
     return new Promise((resolve, reject) => {
-      let devBaseUrl = `${this.ctx.protocol}://${this.ctx.host}:${this.ctx.port}`.replace(':80', '').replace(':443', '');
+      const devBaseUrl = `${this.ctx.protocol}://${this.ctx.host}:${this.ctx.port}`.replace(':80', '').replace(':443', '');
       this.getSiteData()
         .then((data) => {
           return this.deployClientScript(data.Url);
@@ -53,7 +53,7 @@ export default class ReloadProvisioning {
           return this.getSiteUserCustomActions();
         })
         .then((customActions) => {
-          let cas = customActions.filter(function (ca) {
+          const cas = customActions.filter(function (ca) {
             return ca.Title === 'LiveReloadCustomAction';
           });
           if (cas.length === 0) {
@@ -88,13 +88,13 @@ export default class ReloadProvisioning {
         port: this.ctx.port
       })
     );
-    let core = {
+    const core = {
       siteUrl: siteCollectionUrl || this.ctx.siteUrl,
       flatten: false,
       checkin: true,
       checkinType: 1
     };
-    let fileOptions = {
+    const fileOptions = {
       fileName: 'live-reload.client.js',
       fileContent: fileContent,
       folder: '_catalogs/masterpage/spf/dev'
@@ -104,7 +104,7 @@ export default class ReloadProvisioning {
 
   private provisionCustomAction (): Promise<any> {
     this.spr = this.getCachedRequest();
-    let reqBody = {
+    const reqBody = {
       '__metadata': {
         'type': 'SP.UserCustomAction'
       },

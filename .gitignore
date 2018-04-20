@@ -1,5 +1,4 @@
+config/private.*
 node_modules
-bower_components
-config/private.json
-npm-debug.log
 /dist
+/tmp
