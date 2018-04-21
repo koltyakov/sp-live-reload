@@ -29,9 +29,9 @@ export class LiveReload {
       let spRelUrl: string = `${this.settings.siteUrl}/${this.settings.spFolder.replace(/\\/g, '/')}`;
       spRelUrl = spRelUrl.replace('://', '').replace(this.settings.siteUrl.replace('://', '').split('/')[0], '').replace(/\/\//g, '/');
       filePath = filePath.replace(path.resolve(this.settings.watchBase), spRelUrl).replace(/\\/g, '/').replace(/\/\//g, '/');
-      filePath = decodeURIComponent(filePath);
+      filePath = decodeURIComponent(filePath).toLowerCase();
     }
-    if (['html', 'css', 'js'].indexOf(filePath.split('.').pop())) {
+    if (['html', 'css', 'js'].indexOf(filePath.split('.').pop()) !== -1) {
       this.io.emit('live_reload', filePath);
     }
   }
