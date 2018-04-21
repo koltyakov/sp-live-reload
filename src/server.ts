@@ -5,7 +5,7 @@ import * as socketIOServer from 'socket.io';
 import * as http from 'http';
 import * as https from 'https';
 
-import { ILRSettings, ISSLConf } from './interfaces';
+import { ILRSettings, ISSLConf, ILREmittedObject } from './interfaces';
 
 export class LiveReload {
 
@@ -24,16 +24,14 @@ export class LiveReload {
   }
 
   // Triggers file update emition to the client
-  public emitUpdatedPath (filePath: string, raw: boolean = false) {
+  public emitUpdatedPath (filePath: string, raw: boolean = false, body?: string) {
     if (!raw) {
       let spRelUrl: string = `${this.settings.siteUrl}/${this.settings.spFolder.replace(/\\/g, '/')}`;
       spRelUrl = spRelUrl.replace('://', '').replace(this.settings.siteUrl.replace('://', '').split('/')[0], '').replace(/\/\//g, '/');
       filePath = filePath.replace(path.resolve(this.settings.watchBase), spRelUrl).replace(/\\/g, '/').replace(/\/\//g, '/');
       filePath = decodeURIComponent(filePath).toLowerCase();
     }
-    if (['html', 'css', 'js'].indexOf(filePath.split('.').pop()) !== -1) {
-      this.io.emit('live_reload', filePath);
-    }
+    this.io.emit('live_reload', { filePath, body } as ILREmittedObject);
   }
 
   // Init live reload server

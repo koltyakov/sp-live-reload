@@ -1,11 +1,10 @@
 import * as socketIOClient from 'socket.io-client';
 
-import { ILRClientSettings } from './interfaces';
+import { ILRClientSettings, ILREmittedObject } from './interfaces';
 
 export class LiveReloadClient {
 
   private settings: ILRClientSettings;
-  private pageResources: string[];
   private devBaseUrl: string;
   private webUrl: string;
 
@@ -32,6 +31,9 @@ export class LiveReloadClient {
   }
 
   public init = (): void => {
+    let pageResources: string[] = [];
+    let pageStyles: HTMLLinkElement[] = [];
+
     const socket = socketIOClient.connect(this.devBaseUrl, {
       reconnectionDelay: 1000,
       reconnection: true,
@@ -43,21 +45,42 @@ export class LiveReloadClient {
     });
 
     this.getPageResources().then(res => {
-      this.pageResources = res;
+      pageResources = res;
     });
 
-    socket.on('live_reload', (data: string) => {
-      data = (data || '').split('?')[0].toLowerCase();
-      if (this.pageResources.indexOf(data) !== -1) {
-        if (data.indexOf('.css') !== -1) {
-          const styles: HTMLLinkElement[] = Array.prototype.slice.call(document.getElementsByTagName('link'));
-          styles
-            .filter(s => s.href.length > 0)
-            .forEach(s => {
-              if (s.href.toLowerCase().indexOf(data) !== -1) {
-                s.href = `${data}?d=${(new Date()).getTime()}`;
+    const styles: HTMLLinkElement[] = Array.prototype.slice.call(document.getElementsByTagName('link'));
+    pageStyles = styles
+      .filter(s => s.href.length > 0);
+
+    socket.on('live_reload', (data: ILREmittedObject) => {
+      const mapRegexp = /\.map$/i;
+      let filePath = (data.filePath || '').split('?')[0].toLowerCase();
+      filePath = filePath.replace(mapRegexp, '');
+      if (pageResources.indexOf(filePath) !== -1) {
+        if (filePath.indexOf('.css') !== -1) {
+          pageStyles.forEach(s => {
+            let hostname = location.href.split('/').splice(0, 3).join('/');
+            let resourceUrl = s.href.split('?')[0].replace(hostname, '');
+            if (resourceUrl.toLowerCase() === filePath) {
+              if (typeof data.body === 'undefined' || data.body === null) {
+                const href = `${resourceUrl}?ver=${(new Date()).getTime()}`;
+                s.href = href;
+              } else {
+                let styleElement = document.getElementById(resourceUrl);
+                if (styleElement === null) {
+                  styleElement = document.createElement('style');
+                  styleElement.id = resourceUrl;
+                  styleElement.setAttribute('type', 'text/css');
+                  styleElement.innerHTML = data.body;
+                  (s as any).after(styleElement);
+                  s.remove();
+                } else {
+                  styleElement.innerHTML = data.body;
+                  s.remove();
+                }
               }
-            });
+            }
+          });
         } else {
           window.location.reload();
         }
@@ -120,17 +143,18 @@ export class LiveReloadClient {
     // Webparts sources
     endpoint = `${this.webUrl}_api/web/getFileByServerRelativeUrl('${location.pathname}')/` +
       `getLimitedWebPartManager(scope=1)/webparts?$select=WebPart/Properties/ContentLink&$expand=WebPart/Properties`;
-    contentLinks = contentLinks.concat(
-      (
-        await fetch(endpoint, this.fetchOptions)
-          .then(r => r.json())
-          .then(({ d }) => d.results)
-      )
-        .filter(w => w.WebPart.Properties.ContentLink)
-        .map(w => {
-          return w.WebPart.Properties.ContentLink.split('?')[0].toLowerCase();
-        })
-    );
+
+    await fetch(endpoint, this.fetchOptions)
+      .then(r => r.json())
+      .then(({ d }) => {
+        contentLinks = contentLinks.concat(
+          d.results
+            .filter(w => w.WebPart.Properties.ContentLink)
+            .map(w => {
+              return w.WebPart.Properties.ContentLink.split('?')[0].toLowerCase();
+            })
+        );
+      });
 
     return contentLinks;
   }

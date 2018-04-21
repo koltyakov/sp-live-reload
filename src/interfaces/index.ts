@@ -21,3 +21,8 @@ export interface ILRClientSettings {
   host?: string;
   port?: number;
 }
+
+export interface ILREmittedObject {
+  filePath: string;
+  body?: string;
+}
