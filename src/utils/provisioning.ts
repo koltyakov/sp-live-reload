@@ -7,7 +7,7 @@ import * as sprequest from 'sp-request';
 
 import { ILRSettings } from '../interfaces';
 
-export default class ReloadProvisioning {
+export class ReloadProvisioning {
 
   private ctx: ILRSettings;
   private spr: sprequest.ISPRequest;
@@ -15,14 +15,15 @@ export default class ReloadProvisioning {
   constructor (settings: ILRSettings) {
     this.ctx = {
       ...settings,
-      port: settings.port || 3000,
-      host: settings.host || 'localhost',
-      protocol: settings.protocol || settings.siteUrl.indexOf('https://') !== -1 ? 'https' : 'http'
+      port: typeof settings.port !== 'undefined' ? settings.port : 3000,
+      host: typeof settings.host !== 'undefined' ? settings.host : 'localhost',
+      protocol: typeof settings.protocol !== 'undefined' ? settings.protocol :
+        (settings.siteUrl || '').toLowerCase().indexOf('https://') === 0 ? 'https' : 'http'
     };
     this.spr = this.getCachedRequest();
   }
 
-  public getSiteUserCustomActions (): Promise<any> {
+  public getUserCustomActions (): Promise<any> {
     return new Promise((resolve, reject) => {
       this.spr = this.getCachedRequest();
       this.spr.get(`${this.ctx.siteUrl}/_api/site/usercustomactions`)
@@ -44,13 +45,14 @@ export default class ReloadProvisioning {
 
   public provisionMonitoringAction (): Promise<any> {
     return new Promise((resolve, reject) => {
-      const devBaseUrl = `${this.ctx.protocol}://${this.ctx.host}:${this.ctx.port}`.replace(':80', '').replace(':443', '');
+      const devBaseUrl = `${this.ctx.protocol}://${this.ctx.host}:${this.ctx.port}`
+        .replace(':80', '').replace(':443', '');
       this.getSiteData()
         .then((data) => {
           return this.deployClientScript(data.Url);
         })
         .then(() => {
-          return this.getSiteUserCustomActions();
+          return this.getUserCustomActions();
         })
         .then((customActions) => {
           const cas = customActions.filter(function (ca) {
@@ -68,7 +70,7 @@ export default class ReloadProvisioning {
   }
 
   public retractMonitoringAction (): Promise<any> {
-    return this.getSiteUserCustomActions()
+    return this.getUserCustomActions()
       .then((customActions) => {
         customActions.forEach((ca) => {
           if (ca.Title === 'LiveReloadCustomAction') {

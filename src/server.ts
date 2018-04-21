@@ -1,25 +1,26 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as express from 'express';
+import * as socketIOServer from 'socket.io';
+import * as http from 'http';
+import * as https from 'https';
 
-import Provisioning from './utils/provisioning';
 import { ILRSettings, ISSLConf } from './interfaces';
 
-class LiveReload {
+export class LiveReload {
 
   public settings: ILRSettings;
-  private provisioning: any;
-  private io: any;
+  private io: socketIOServer.Server;
   private liveReloadClientContent: string;
 
-  constructor (settings: ILRSettings) {
+  public constructor (settings: ILRSettings) {
     this.settings = {
       ...settings,
-      port: settings.port || 3000,
-      host: settings.host || 'localhost',
-      protocol: settings.protocol || (settings.siteUrl.indexOf('https://') !== -1 ? 'https' : 'http')
+      port: typeof settings.port !== 'undefined' ? settings.port : 3000,
+      host: typeof settings.host !== 'undefined' ? settings.host : 'localhost',
+      protocol: typeof settings.protocol !== 'undefined' ? settings.protocol :
+        (settings.siteUrl || '').toLowerCase().indexOf('https://') === 0 ? 'https' : 'http'
     };
-    this.provisioning = new Provisioning(this.settings);
   }
 
   // Triggers file update emition to the client
@@ -30,7 +31,9 @@ class LiveReload {
       filePath = filePath.replace(path.resolve(this.settings.watchBase), spRelUrl).replace(/\\/g, '/').replace(/\/\//g, '/');
       filePath = decodeURIComponent(filePath);
     }
-    this.io.emit('liveReload', filePath);
+    if (['html', 'css', 'js'].indexOf(filePath.split('.').pop())) {
+      this.io.emit('live_reload', filePath);
+    }
   }
 
   // Init live reload server
@@ -64,6 +67,7 @@ class LiveReload {
     });
     app.use('/s', staticRouter);
 
+    let server: http.Server | https.Server;
     if (this.settings.protocol === 'https') {
       if (typeof this.settings.ssl === 'undefined') {
         console.log('Error: No SSL settings provided!');
@@ -73,41 +77,22 @@ class LiveReload {
         key: fs.readFileSync(this.settings.ssl.key),
         cert: fs.readFileSync(this.settings.ssl.cert)
       };
-      const https = require('https');
-      const server = https.createServer(options, app);
-      this.io = require('socket.io')(server);
-      server.listen(this.settings.port, this.settings.host, () => {
-        console.log('Live reload server is up and running at %s://%s:%s',
-          this.settings.protocol, this.settings.host, this.settings.port);
-        console.log('Make sure that:');
-        console.log(' - monitoring script (%s://%s:%s/s/live-reload.client.js) is provisioned to SharePoint.',
-          this.settings.protocol, this.settings.host, this.settings.port);
-        console.log(' - SSL certificate is trusted in the browser.');
-      });
+      server = https.createServer(options, app);
     } else {
-      const server = require('http').Server(app);
-      this.io = require('socket.io')(server);
-      server.listen(this.settings.port, this.settings.host, () => {
-        console.log('Live reload server is up and running at %s://%s:%s',
-          this.settings.protocol, this.settings.host, this.settings.port);
-        console.log('Make sure that monitoring script (%s://%s:%s/s/live-reload.client.js) is provisioned to SharePoint.',
-          this.settings.protocol, this.settings.host, this.settings.port);
-      });
+      server = new http.Server(app);
     }
-  }
-
-  private getUserCustomActions (): Promise<any> {
-    return this.provisioning.getUserCustomActions();
-  }
-
-  private provisionMonitoringAction (): Promise<any> {
-    return this.provisioning.provisionMonitoringAction();
-  }
-
-  private retractMonitoringAction (): Promise<any> {
-    return this.provisioning.retractMonitoringAction();
+    this.io = socketIOServer(server);
+    server.listen(this.settings.port, this.settings.host, () => {
+      const address = `${this.settings.protocol}://${this.settings.host}:${this.settings.port}`;
+      console.log(`Live reload server is up and running at ${address}`);
+      if (this.settings.protocol === 'https') {
+        console.log('Make sure that:');
+        console.log(` - monitoring script (%s://%s:%s/s/live-reload.client.js) is provisioned to SharePoint.`);
+        console.log(` - SSL certificate is trusted in the browser.`);
+      } else {
+        console.log(`Make sure that monitoring script (${address}/s/live-reload.client.js) is provisioned to SharePoint.`);
+      }
+    });
   }
 
 }
-
-module.exports = LiveReload;

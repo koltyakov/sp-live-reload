@@ -2,15 +2,17 @@ const webpack = require('webpack');
 const { resolve } = require('path');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
+const sourceMap = false;
+
 const config = {
+  mode: 'production',
   entry: [ './src/utils/polyfills', './src/client' ],
   output: {
     path: resolve(process.cwd(), './dist/static'),
     filename: 'live-reload.client.js'
   },
-  mode: 'production',
   cache: false,
-  devtool: 'source-map',
+  devtool: sourceMap ? 'source-map' : 'none',
   module: {
     rules: [
       {
@@ -21,7 +23,7 @@ const config = {
     ]
   },
   plugins: [
-    new UglifyJSPlugin({ sourceMap: true }),
+    new UglifyJSPlugin({ sourceMap }),
     new webpack.DefinePlugin({
       'process.env': {
         'NODE_ENV': JSON.stringify('production')
@@ -29,11 +31,8 @@ const config = {
     })
   ],
   resolve: {
-    extensions: [ '.ts', '.tsx', '.js', '.jsx' ],
-    mainFields: [ 'esnext', 'es2015', 'module', 'main' ]
-  },
-  externals : {
-    'adal-angular': 'adal-angular'
+    extensions: [ '.ts', '.js' ],
+    // mainFields: [ 'esnext', 'es2015', 'module', 'main' ]
   }
 };
 

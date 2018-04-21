@@ -35,7 +35,7 @@ const gulp = require('gulp');
 const spsave = require("gulp-spsave");
 const watch = require('gulp-watch');
 const through = require('through2');
-const LiveReload = require('sp-live-reload');
+const { LiveReload } = require('sp-live-reload');
 
 let config = require('./config');
 
@@ -67,7 +67,7 @@ const gulp = require('gulp');
 const spsync = require("gulp-spsync");
 const watch = require('gulp-watch');
 const through = require('through2');
-const LiveReload = require('sp-live-reload');
+const { LiveReload } = require('sp-live-reload');
 
 let config = require('./config');
 
