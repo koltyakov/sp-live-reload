@@ -11,7 +11,7 @@ import 'whatwg-fetch';
       configurable: true,
       enumerable: true,
       writable: true,
-      value: (...args) => {
+      value: function (...args) {
         const docFrag = document.createDocumentFragment();
         args.forEach((argItem) => {
           const isNode = argItem instanceof Node;

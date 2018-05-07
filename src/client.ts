@@ -57,11 +57,14 @@ export class LiveReloadClient {
       let filePath = (data.filePath || '').split('?')[0].toLowerCase();
       filePath = filePath.replace(mapRegexp, '');
       if (pageResources.indexOf(filePath) !== -1) {
-        if (filePath.indexOf('.css') !== -1) {
+        if (filePath.indexOf('.css') === filePath.length - 4) {
           pageStyles.forEach(s => {
             let hostname = location.href.split('/').splice(0, 3).join('/');
-            let resourceUrl = s.href.split('?')[0].replace(hostname, '');
-            if (resourceUrl.toLowerCase() === filePath) {
+            let resourceUrl = s.href.split('?')[0].toLowerCase();
+            if (resourceUrl.indexOf('http') === 0) {
+              resourceUrl = resourceUrl.replace(hostname, '');
+            }
+            if (resourceUrl === filePath) {
               if (typeof data.body === 'undefined' || data.body === null) {
                 const href = `${resourceUrl}?ver=${(new Date()).getTime()}`;
                 s.href = href;
