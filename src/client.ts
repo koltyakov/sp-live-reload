@@ -141,20 +141,22 @@ export class LiveReloadClient {
     }
 
     // Webparts sources
-    endpoint = `${this.webUrl}_api/web/getFileByServerRelativeUrl('${location.pathname}')/` +
-      `getLimitedWebPartManager(scope=1)/webparts?$select=WebPart/Properties/ContentLink&$expand=WebPart/Properties`;
+    if (location.pathname.toLowerCase().indexOf('/_layouts/15/') === -1) {
+      endpoint = `${this.webUrl}_api/web/getFileByServerRelativeUrl('${location.pathname}')/` +
+        `getLimitedWebPartManager(scope=1)/webparts?$select=WebPart/Properties/ContentLink&$expand=WebPart/Properties`;
 
-    await fetch(endpoint, this.fetchOptions)
-      .then(r => r.json())
-      .then(({ d }) => {
-        contentLinks = contentLinks.concat(
-          d.results
-            .filter(w => w.WebPart.Properties.ContentLink)
-            .map(w => {
-              return w.WebPart.Properties.ContentLink.split('?')[0].toLowerCase();
-            })
-        );
-      });
+      await fetch(endpoint, this.fetchOptions)
+        .then(r => r.json())
+        .then(({ d }) => {
+          contentLinks = contentLinks.concat(
+            d.results
+              .filter(w => w.WebPart.Properties.ContentLink)
+              .map(w => {
+                return w.WebPart.Properties.ContentLink.split('?')[0].toLowerCase();
+              })
+          );
+        });
+    }
 
     return contentLinks;
   }
