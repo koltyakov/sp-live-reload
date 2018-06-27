@@ -1,3 +1,5 @@
+//@ts-check
+
 const webpack = require('webpack');
 const { resolve } = require('path');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
@@ -31,8 +33,7 @@ const config = {
     })
   ],
   resolve: {
-    extensions: [ '.ts', '.js' ],
-    // mainFields: [ 'esnext', 'es2015', 'module', 'main' ]
+    extensions: [ '.ts', '.js' ]
   }
 };
 

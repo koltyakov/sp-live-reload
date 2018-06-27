@@ -8,8 +8,18 @@
     "moduleResolution": "node",
     "noImplicitAny": false,
     "removeComments": true,
+    "newLine": "LF",
     "skipLibCheck": true,
-    "outDir": "tmp",
-    "types": ["node", "sharepoint"]
-  }
+    "types": ["node", "sharepoint"],
+    "outDir": "dist"
+  },
+  "include": [
+    "src/**/*.ts",
+    "tests/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "test"
+  ]
 }
