@@ -6,7 +6,7 @@
   "typings": "./dist/index",
   "scripts": {
     "build": "rm -rf ./dist && tsc -p . && webpack",
-    "test": "cd test && yarn install && gulp test-watch",
+    "test": "cd test && npm install && gulp test-watch",
     "analyze": "source-map-explorer ./dist/static/live-reload.client.*"
   },
   "repository": {
@@ -44,12 +44,12 @@
     "es6-promise": "^4.2.4",
     "source-map-explorer": "git+https://github.com/danvk/source-map-explorer.git#b74f718",
     "ts-node": "^7.0.0",
-    "tslint": "^5.10.0",
+    "tslint": "^5.11.0",
     "tslint-config-standard": "^7.1.0",
-    "typescript": "^2.9.2",
+    "typescript": "^3.0.1",
     "uglifyjs-webpack-plugin": "^1.2.7",
-    "webpack": "^4.12.2",
-    "webpack-cli": "^3.0.8",
+    "webpack": "^4.16.5",
+    "webpack-cli": "^3.1.0",
     "whatwg-fetch": "^2.0.4"
   }
 }
