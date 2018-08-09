@@ -85,7 +85,7 @@ export class LiveReload {
       console.log(`Live reload server is up and running at ${address}`);
       if (this.settings.protocol === 'https') {
         console.log('Make sure that:');
-        console.log(` - monitoring script (%s://%s:%s/s/live-reload.client.js) is provisioned to SharePoint.`);
+        console.log(` - monitoring script (${address}/s/live-reload.client.js) is provisioned to SharePoint.`);
         console.log(` - SSL certificate is trusted in the browser.`);
       } else {
         console.log(`Make sure that monitoring script (${address}/s/live-reload.client.js) is provisioned to SharePoint.`);
