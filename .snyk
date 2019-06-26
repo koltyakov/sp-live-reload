@@ -1,0 +1,14 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.13.5
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  'npm:extend:20180424':
+    - sp-request > node-sp-auth > node-ntlm-client > extend:
+        patched: '2019-06-26T06:39:08.504Z'
+    - sp-request > node-sp-auth > node-ntlm-client > request > extend:
+        patched: '2019-06-26T06:39:08.504Z'
+    - spsave > sp-request > node-sp-auth > node-ntlm-client > extend:
+        patched: '2019-06-26T06:39:08.504Z'
+    - spsave > sp-request > node-sp-auth > node-ntlm-client > request > extend:
+        patched: '2019-06-26T06:39:08.504Z'
