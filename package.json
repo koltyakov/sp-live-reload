@@ -1,6 +1,6 @@
 {
   "name": "sp-live-reload",
-  "version": "3.0.7",
+  "version": "3.0.8",
   "description": "SharePoint pages live reload module for client side development",
   "main": "./dist/index.js",
   "typings": "./dist/index",
@@ -28,6 +28,7 @@
   "homepage": "https://github.com/koltyakov/sp-live-reload#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "node-sp-auth": "^2.5.7",
     "socket.io": "^2.2.0",
     "socket.io-client": "^2.2.0",
     "sp-request": "^2.1.3",
