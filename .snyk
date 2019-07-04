@@ -12,3 +12,54 @@ patch:
         patched: '2019-06-26T06:39:08.504Z'
     - spsave > sp-request > node-sp-auth > node-ntlm-client > request > extend:
         patched: '2019-06-26T06:39:08.504Z'
+  SNYK-JS-LODASH-450202:
+    - node-sp-auth > request-promise > request-promise-core > lodash:
+        patched: '2019-07-03T21:15:48.166Z'
+    - snyk > lodash:
+        patched: '2019-07-03T21:15:48.166Z'
+    - sp-request > lodash:
+        patched: '2019-07-03T21:15:48.166Z'
+    - node-sp-auth > lodash:
+        patched: '2019-07-03T21:15:48.166Z'
+    - sp-request > node-sp-auth > lodash:
+        patched: '2019-07-03T21:15:48.166Z'
+    - snyk > inquirer > lodash:
+        patched: '2019-07-03T21:15:48.166Z'
+    - spsave > sp-request > lodash:
+        patched: '2019-07-03T21:15:48.166Z'
+    - snyk > snyk-nuget-plugin > lodash:
+        patched: '2019-07-03T21:15:48.166Z'
+    - snyk > @snyk/dep-graph > lodash:
+        patched: '2019-07-03T21:15:48.166Z'
+    - snyk > snyk-config > lodash:
+        patched: '2019-07-03T21:15:48.166Z'
+    - snyk > snyk-mvn-plugin > lodash:
+        patched: '2019-07-03T21:15:48.166Z'
+    - snyk > snyk-nodejs-lockfile-parser > lodash:
+        patched: '2019-07-03T21:15:48.166Z'
+    - spsave > lodash:
+        patched: '2019-07-03T21:15:48.166Z'
+    - snyk > snyk-go-plugin > graphlib > lodash:
+        patched: '2019-07-03T21:15:48.166Z'
+    - snyk > snyk-nodejs-lockfile-parser > graphlib > lodash:
+        patched: '2019-07-03T21:15:48.166Z'
+    - node-sp-auth > node-sp-auth-config > inquirer > lodash:
+        patched: '2019-07-03T21:15:48.166Z'
+    - spsave > sp-request > node-sp-auth > lodash:
+        patched: '2019-07-03T21:15:48.166Z'
+    - sp-request > request-promise > request-promise-core > lodash:
+        patched: '2019-07-03T21:15:48.166Z'
+    - snyk > snyk-php-plugin > @snyk/composer-lockfile-parser > lodash:
+        patched: '2019-07-03T21:15:48.166Z'
+    - snyk > @snyk/dep-graph > graphlib > lodash:
+        patched: '2019-07-03T21:15:48.166Z'
+    - sp-request > node-sp-auth > node-sp-auth-config > inquirer > lodash:
+        patched: '2019-07-03T21:15:48.166Z'
+    - spsave > sp-request > request-promise > request-promise-core > lodash:
+        patched: '2019-07-03T21:15:48.166Z'
+    - sp-request > node-sp-auth > request-promise > request-promise-core > lodash:
+        patched: '2019-07-03T21:15:48.166Z'
+    - spsave > sp-request > node-sp-auth > request-promise > request-promise-core > lodash:
+        patched: '2019-07-03T21:15:48.166Z'
+    - spsave > sp-request > node-sp-auth > node-sp-auth-config > inquirer > lodash:
+        patched: '2019-07-03T21:15:48.166Z'
