@@ -63,3 +63,8 @@ patch:
         patched: '2019-07-03T21:15:48.166Z'
     - spsave > sp-request > node-sp-auth > node-sp-auth-config > inquirer > lodash:
         patched: '2019-07-03T21:15:48.166Z'
+  SNYK-JS-HTTPSPROXYAGENT-469131:
+    - snyk > proxy-agent > https-proxy-agent:
+        patched: '2019-10-03T21:15:53.330Z'
+    - snyk > proxy-agent > pac-proxy-agent > https-proxy-agent:
+        patched: '2019-10-03T21:15:53.330Z'
