@@ -2,7 +2,7 @@
 
 const webpack = require('webpack');
 const { resolve } = require('path');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 const sourceMap = false;
 
@@ -24,8 +24,17 @@ const config = {
       }
     ]
   },
+  optimization: {
+    minimizer: [
+      new TerserPlugin({
+        cache: true,
+        parallel: true,
+        sourceMap: false,
+        extractComments: 'all'
+      })
+    ]
+  },
   plugins: [
-    new UglifyJSPlugin({ sourceMap }),
     new webpack.DefinePlugin({
       'process.env': {
         'NODE_ENV': JSON.stringify('production')
