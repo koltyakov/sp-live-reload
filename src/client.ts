@@ -59,7 +59,7 @@ export class LiveReloadClient {
       if (pageResources.indexOf(filePath) !== -1) {
         if (filePath.indexOf('.css') === filePath.length - 4) {
           pageStyles.forEach(s => {
-            let hostname = location.href.split('/').splice(0, 3).join('/');
+            const hostname = location.href.split('/').splice(0, 3).join('/');
             let resourceUrl = s.href.split('?')[0].toLowerCase();
             if (resourceUrl.indexOf('http') === 0) {
               resourceUrl = resourceUrl.replace(hostname, '');

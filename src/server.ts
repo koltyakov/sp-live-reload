@@ -5,7 +5,7 @@ import * as socketIOServer from 'socket.io';
 import * as http from 'http';
 import * as https from 'https';
 
-import { ILRSettings, ISSLConf, ILREmittedObject } from './interfaces';
+import { ILRSettings, ILREmittedObject } from './interfaces';
 
 export class LiveReload {
 
@@ -31,7 +31,7 @@ export class LiveReload {
       filePath = filePath.replace(path.resolve(this.settings.watchBase), spRelUrl).replace(/\\/g, '/').replace(/\/\//g, '/');
       filePath = decodeURIComponent(filePath).toLowerCase();
     }
-    this.io.emit('live_reload', { filePath, body } as ILREmittedObject);
+    this.io.emit('live_reload', { filePath, body } as unknown as ILREmittedObject);
   }
 
   // Init live reload server
@@ -68,7 +68,7 @@ export class LiveReload {
     let server: http.Server | https.Server;
     if (this.settings.protocol === 'https') {
       if (typeof this.settings.ssl === 'undefined') {
-        console.log('Error: No SSL settings provided!');
+        log('Error: No SSL settings provided!');
         return;
       }
       const options = {
@@ -82,15 +82,18 @@ export class LiveReload {
     this.io = socketIOServer(server);
     server.listen(this.settings.port, this.settings.host, () => {
       const address = `${this.settings.protocol}://${this.settings.host}:${this.settings.port}`;
-      console.log(`Live reload server is up and running at ${address}`);
+      log(`Live reload server is up and running at ${address}`);
       if (this.settings.protocol === 'https') {
-        console.log('Make sure that:');
-        console.log(` - monitoring script (${address}/s/live-reload.client.js) is provisioned to SharePoint.`);
-        console.log(` - SSL certificate is trusted in the browser.`);
+        log('Make sure that:');
+        log(` - monitoring script (${address}/s/live-reload.client.js) is provisioned to SharePoint.`);
+        log(` - SSL certificate is trusted in the browser.`);
       } else {
-        console.log(`Make sure that monitoring script (${address}/s/live-reload.client.js) is provisioned to SharePoint.`);
+        log(`Make sure that monitoring script (${address}/s/live-reload.client.js) is provisioned to SharePoint.`);
       }
     });
   }
 
 }
+
+// tslint:disable-next-line: no-console
+const log = console.log;

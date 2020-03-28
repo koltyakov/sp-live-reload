@@ -1,6 +1,7 @@
 {
-  "extends": "tslint-config-standard",
+  "extends": "tslint:latest",
   "rules": {
-    "semicolon": [true, "always", "ignore-interfaces"]
+    "semicolon": [true, "always", "ignore-interfaces"],
+    "no-submodule-imports": false
   }
 }

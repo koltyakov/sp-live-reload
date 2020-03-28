@@ -1,4 +1,6 @@
+// tslint:disable-next-line: no-implicit-dependencies
 import 'es6-promise/auto';
+// tslint:disable-next-line: no-implicit-dependencies
 import 'whatwg-fetch';
 
 // Vanilla JS after prototype
@@ -11,7 +13,7 @@ import 'whatwg-fetch';
       configurable: true,
       enumerable: true,
       writable: true,
-      value: function (...args) {
+      value: (...args) => {
         const docFrag = document.createDocumentFragment();
         args.forEach((argItem) => {
           const isNode = argItem instanceof Node;

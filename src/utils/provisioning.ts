@@ -2,7 +2,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { spsave } from 'spsave';
 import * as spauth from 'node-sp-auth';
-import * as request from 'request-promise';
 import * as sprequest from 'sp-request';
 
 import { ILRSettings } from '../interfaces';
@@ -55,7 +54,7 @@ export class ReloadProvisioning {
           return this.getUserCustomActions();
         })
         .then((customActions) => {
-          const cas = customActions.filter(function (ca) {
+          const cas = customActions.filter((ca) => {
             return ca.Title === 'LiveReloadCustomAction';
           });
           if (cas.length === 0) {
@@ -98,7 +97,7 @@ export class ReloadProvisioning {
     };
     const fileOptions = {
       fileName: 'live-reload.client.js',
-      fileContent: fileContent,
+      fileContent,
       folder: '_catalogs/masterpage/spf/dev'
     };
     return spsave(core, this.ctx.creds, fileOptions) as any;
